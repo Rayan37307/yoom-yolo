@@ -1,3 +1,5 @@
+@import 'stream-chat-react/dist/css/v2/index.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -79,6 +81,18 @@
 }
 
 /* =============================== */
+
+/* stream chat theme overrides */
+.str-chat {
+  --str-chat__surface-color: #1c1f2e;
+  --str-chat__secondary-surface-color: #161925;
+  --str-chat__primary-surface-color: #252a41;
+  --str-chat__text-color: #ffffff;
+  --str-chat__secondary-text-color: #d1d5db;
+  --str-chat__border-color: #374151;
+  --str-chat__input-background-color: #1c1f2e;
+  --str-chat__input-text-color: #ffffff;
+}
 
 @layer utilities {
   .flex-center {

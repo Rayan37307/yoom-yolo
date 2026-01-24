@@ -9,8 +9,8 @@ import {
   SpeakerLayout,
   useCallStateHooks,
 } from '@stream-io/video-react-sdk';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Users, LayoutList } from 'lucide-react';
+import { useRouter, useSearchParams, useParams } from 'next/navigation';
+import { Users, LayoutList, MessageCircle, X } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -21,16 +21,19 @@ import {
 } from './ui/dropdown-menu';
 import Loader from './Loader';
 import EndCallButton from './EndCallButton';
+import ChatPanel from './ChatPanel';
 import { cn } from '@/lib/utils';
 
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
 const MeetingRoom = () => {
   const searchParams = useSearchParams();
+  const { id } = useParams();
   const isPersonalRoom = !!searchParams.get('personal');
   const router = useRouter();
   const [layout, setLayout] = useState<CallLayoutType>('speaker-left');
   const [showParticipants, setShowParticipants] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const { useCallCallingState } = useCallStateHooks();
 
   // for more detail about types of CallingState see: https://getstream.io/video/docs/react/ui-cookbook/ringing-call/#incoming-call-panel
@@ -63,6 +66,20 @@ const MeetingRoom = () => {
           <CallParticipantsList onClose={() => setShowParticipants(false)} />
         </div>
       </div>
+      {showChat && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="relative bg-dark-1 p-4 rounded-lg max-w-lg w-full max-h-[80vh] overflow-hidden">
+            <button
+              onClick={() => setShowChat(false)}
+              className="absolute top-4 right-4 p-2 bg-dark-2 rounded-full text-white hover:bg-dark-3 transition-colors"
+              aria-label="Close chat"
+            >
+              <X size={20} />
+            </button>
+            <ChatPanel channelId={id as string} />
+          </div>
+        </div>
+      )}
       {/* video layout and call controls */}
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5">
         <CallControls onLeave={() => router.push(`/`)} />
@@ -92,6 +109,11 @@ const MeetingRoom = () => {
         <button onClick={() => setShowParticipants((prev) => !prev)}>
           <div className=" cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]  ">
             <Users size={20} className="text-white" />
+          </div>
+        </button>
+        <button onClick={() => setShowChat((prev) => !prev)}>
+          <div className=" cursor-pointer rounded-2xl bg-[#19232d] px-4 py-2 hover:bg-[#4c535b]  ">
+            <MessageCircle size={20} className="text-white" />
           </div>
         </button>
         {!isPersonalRoom && <EndCallButton />}
